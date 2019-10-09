@@ -37,7 +37,6 @@ const OperatorsInfo = {
 	[Symbols.Subtraction]: OperatorPriority.Low,
 	[Symbols.Multiply]: OperatorPriority.Normal,
 	[Symbols.Division]: OperatorPriority.Normal
-	// brackets
 };
 
 const convertToPostfixPolishNotation = (exp) => {
@@ -50,12 +49,9 @@ const convertToPostfixPolishNotation = (exp) => {
 		if (currentSymbol === Symbols.Space) {
 			continue;
 		}
-		// const expr = ' 11 - (22 + 33 * ( 44 - 55 ) / 66 + 77 ) ';
-		// should : 11 22 33 44 55 - * 66 / + 77 + -
-		// reality: 11 22 33 44 55 - * 66 / + 77 + 
 		if (SymbolsHash[currentSymbol]) {
 			if (operand) {
-				result += operand;
+				result += ` ${operand}`;
 				operand = StringEmpty;
 			}
 
@@ -68,12 +64,12 @@ const convertToPostfixPolishNotation = (exp) => {
 				if (previousOperator) {
 					if (currentOperator === previousOperator) {
 						const operatorFromStack = stack.pop();
-						result += operatorFromStack;
+						result += ` ${operatorFromStack}`;
 					} else {
 						if (currentOperator < previousOperator) {
 							let operatorFromStack = stack.pop();
 							while (operatorFromStack) {
-								result += operatorFromStack;
+								result += ` ${operatorFromStack}`;
 
 								const previousSymbol = (stack.length > 0 && stack[stack.length - 1]) || null;
 
@@ -92,11 +88,10 @@ const convertToPostfixPolishNotation = (exp) => {
 				if (currentSymbol === Symbols.ClosedBracket) {
 					let symbolFromStack = stack.pop();
 					while (symbolFromStack != Symbols.OpenedBracket) {
-						result += symbolFromStack;
+						result +=` ${symbolFromStack}` ;
 						symbolFromStack = stack.pop();
 					}
 					continue;
-				} else {
 				}
 			}
 
@@ -113,10 +108,12 @@ const convertToPostfixPolishNotation = (exp) => {
 		}
 	}
 
+	result += ` ${operand}`;;
+
 	if(stack.length > 0){
 		let element = stack.pop();
 		while(element){
-			result += element;
+			result += ` ${element}`;
 			element = stack.pop();
 		}
 	}
@@ -134,13 +131,6 @@ const expressionCalculator = (expr) => {
 
 	return result;
 };
-
-// 11 22 33 44 55 + * 66 / + 77 + +
-const expr = ' 11 - (22 + 33 * ( 44 - 55 ) / 66 + 77 ) ';
-// const expr = " 59 - 13 + (  25 * 22 / (  47 / 38 * (  64 / 93 - 91 + 72  ) * 66  ) + 43 - 5  ) * 39 / 55 ";
-
-const result = convertToPostfixPolishNotation(expr);
-console.log(result);
 
 module.exports = {
 	expressionCalculator
