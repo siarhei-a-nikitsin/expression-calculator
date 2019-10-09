@@ -4,7 +4,7 @@ const errorMessages = {
 	invalidInput: 'ExpressionError: Expression is not valid'
 };
 
-const StringEmpty = '';
+const EmptyString = '';
 
 const OperatorPriority = {
 	Low: 1,
@@ -40,9 +40,9 @@ const OperatorsInfo = {
 };
 
 const convertToPostfixPolishNotation = (exp) => {
-	let result = StringEmpty;
+	let result = EmptyString;
 	let stack = [];
-	let operand = StringEmpty;
+	let operand = EmptyString;
 
 	for (let i = 0; i < exp.length; i++) {
 		const currentSymbol = exp[i];
@@ -52,7 +52,7 @@ const convertToPostfixPolishNotation = (exp) => {
 		if (SymbolsHash[currentSymbol]) {
 			if (operand) {
 				result += ` ${operand}`;
-				operand = StringEmpty;
+				operand = EmptyString;
 			}
 
 			const currentOperator = OperatorsInfo[currentSymbol];
@@ -124,12 +124,56 @@ const convertToPostfixPolishNotation = (exp) => {
 const expressionCalculator = (expr) => {
 	// step 1 - get expression from the given expression in postfix polish notation (remove brackets at all from the given expression)
 	const polishExpr = convertToPostfixPolishNotation(expr);
-	console.log(polishExpr);
 
 	// step 2 - calculate expression
-	let result = 0;
+	const stack = [];
+	let number = EmptyString;
 
-	return result;
+
+	for(let i = 0; i < polishExpr.length; i++) {
+		const currentSymbol = polishExpr[i];
+		
+		if(currentSymbol === Symbols.Space){
+			number && stack.push(number);
+			number = EmptyString;
+			continue;
+		}
+
+		if (SymbolsHash[currentSymbol]) {
+			number && stack.push(number);
+			number = EmptyString;
+
+			const rightOperand = Number(stack.pop());
+			const leftOperand = Number(stack.pop());
+			let resultOperation;
+
+			switch(currentSymbol){
+				case Symbols.Multiply:
+					resultOperation = leftOperand * rightOperand;
+					break;
+				case Symbols.Division: 
+					if(rightOperand === 0){
+						throw new Error(errorMessages.divisionByZero);
+					}
+					resultOperation = leftOperand / rightOperand;		
+					break;
+				case Symbols.Subtraction: 
+					resultOperation = leftOperand - rightOperand;
+					break;
+				case Symbols.Addition: 
+					resultOperation = leftOperand + rightOperand;
+					break;
+				default:
+					throw new Error('The passed operator is not valid');
+			}
+
+			stack.push(resultOperation);
+		} else {
+			number += currentSymbol;
+		}
+	}
+
+	return stack.pop();
 };
 
 module.exports = {
