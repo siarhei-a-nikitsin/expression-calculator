@@ -88,6 +88,10 @@ const convertToPostfixPolishNotation = (exp) => {
 				if (currentSymbol === Symbols.ClosedBracket) {
 					let symbolFromStack = stack.pop();
 					while (symbolFromStack != Symbols.OpenedBracket) {
+						if(!symbolFromStack){
+							throw new Error(errorMessages.bracketsInvalid);
+						}
+
 						result +=` ${symbolFromStack}` ;
 						symbolFromStack = stack.pop();
 					}
@@ -114,6 +118,9 @@ const convertToPostfixPolishNotation = (exp) => {
 		let element = stack.pop();
 		while(element){
 			result += ` ${element}`;
+			if(element === Symbols.ClosedBracket || element === Symbols.OpenedBracket){
+				throw new Error(errorMessages.bracketsInvalid);
+			}
 			element = stack.pop();
 		}
 	}
@@ -175,6 +182,9 @@ const expressionCalculator = (expr) => {
 
 	return stack.pop();
 };
+
+// const expr = '1 + 2) * 3';
+// const reesult = expressionCalculator(expr);
 
 module.exports = {
 	expressionCalculator
