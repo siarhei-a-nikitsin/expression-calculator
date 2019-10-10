@@ -183,9 +183,6 @@ const expressionCalculator = (expr) => {
 	return stack.pop();
 };
 
-// const expr = '1 + 2) * 3';
-// const reesult = expressionCalculator(expr);
-
 module.exports = {
 	expressionCalculator
 };
